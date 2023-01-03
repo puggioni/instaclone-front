@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Container, Image } from "semantic-ui-react";
 import instaclone from "../../assets/png/instaclone.png";
 import RegisterForm from "../../components/Auth/RegisterForm/RegisterForm";
+import LoginForm from "../../components/Auth/LoginForm/LoginForm";
 export default function Auth() {
   const [showLogin, setShowLogin] = useState(true);
   return (
@@ -10,7 +11,7 @@ export default function Auth() {
       <Image src={instaclone} />
       <div className="container-form">
         {showLogin ? (
-          <h2>Entra para ver fotos y videos de tus amigos.</h2>
+          <LoginForm />
         ) : (
           <RegisterForm setShowLogin={setShowLogin} />
         )}
