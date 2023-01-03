@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import client from "./config/apollo";
 import { ApolloProvider } from "@apollo/client";
+import { ToastContainer } from "react-toastify";
 import Auth from "./pages/auth/";
 export default function App() {
   const [auth, setAuth] = useState(undefined);
@@ -8,6 +9,17 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       {!auth ? <Auth /> : <h1>Estas logueado</h1>}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </ApolloProvider>
   );
 }

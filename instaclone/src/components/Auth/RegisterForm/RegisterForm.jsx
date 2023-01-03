@@ -3,7 +3,12 @@ import "./RegisterForm.scss";
 import { Form, Button } from "semantic-ui-react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useMutation } from "@apollo/client";
+import { REGISTER } from "../../../gql/user";
+import { toast } from "react-toastify";
 const RegisterForm = ({ setShowLogin }) => {
+  const [register] = useMutation(REGISTER);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -34,9 +39,21 @@ const RegisterForm = ({ setShowLogin }) => {
         .required("Este campo es obligatorio")
         .oneOf([yup.ref("password")], "Las contraseñas no son iguales"),
     }),
-    onSubmit: (formValue) => {
-      console.log("enviando formulario");
-      console.log(formValue);
+    onSubmit: async (formValue) => {
+      try {
+        const newUser = formValue;
+        delete newUser.repeatPassword;
+        await register({
+          variables: {
+            input: newUser,
+          },
+        });
+        toast.success("Usuario registrado correctamente");
+        setShowLogin(true);
+      } catch (error) {
+        toast.error(error.message);
+        console.log(error);
+      }
     },
   });
   return (
