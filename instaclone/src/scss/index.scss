@@ -20,4 +20,9 @@ code {
     background-color: $color-primary;
     color: $font-light;
   }
+  .submit-error {
+    color: $color-secondary;
+    text-align: center;
+    margin: 20px 0 0 0;
+  }
 }

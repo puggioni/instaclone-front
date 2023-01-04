@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useMutation } from "@apollo/client";
-import { REGISTER } from "../../../gql/user";
+import { LOGIN } from "../../../gql/user";
 import { toast } from "react-toastify";
 import "./LoginForm.scss";
 const LoginForm = () => {
+  const [error, setError] = useState("");
   const [login] = useMutation(LOGIN);
   const formik = useFormik({
     initialValues: {
@@ -21,8 +22,17 @@ const LoginForm = () => {
       password: yup.string().required("Este campo es obligatorio"),
     }),
     onSubmit: async (formValue) => {
+      setError("");
       try {
-      } catch (error) {}
+        const { data } = await login({
+          variables: {
+            input: formValue,
+          },
+        });
+        console.log(data);
+      } catch (error) {
+        setError(error.message);
+      }
     },
   });
   return (
@@ -30,12 +40,14 @@ const LoginForm = () => {
       <h2 className="login-form-title">
         Regístrate para ver fotos y videos de tus amigos.
       </h2>
-      <Form className="login-form">
+      <Form className="login-form" onSubmit={formik.handleSubmit}>
         <Form.Input
           type="text"
           placeholder="Correo electronico"
           name="email"
           onChange={formik.handleChange}
+          value={formik.values.email}
+          error={formik.errors.email}
         />
         <Form.Input
           type="password"
@@ -43,10 +55,12 @@ const LoginForm = () => {
           name="password"
           onChange={formik.handleChange}
           error={formik.errors.password}
+          value={formik.values.password}
         />
         <Button type="submit" className="btn-submit">
           Iniciar Sesion
         </Button>
+        {error && <p className="submit-error">{error}</p>}
       </Form>
     </>
   );
