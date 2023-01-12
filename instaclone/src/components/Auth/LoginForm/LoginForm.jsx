@@ -5,10 +5,13 @@ import * as yup from "yup";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../../../gql/user";
 import { toast } from "react-toastify";
+import {setToken, decodeToken} from "../../../utils/token"
 import "./LoginForm.scss";
+import { useAuth } from "../../../hooks/useAuth";
 const LoginForm = () => {
   const [error, setError] = useState("");
   const [login] = useMutation(LOGIN);
+  const {setUser} = useAuth();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -29,7 +32,9 @@ const LoginForm = () => {
             input: formValue,
           },
         });
-        console.log(data);
+        const { token } = data.login;
+        setToken(token);
+        setUser(decodeToken(token));
       } catch (error) {
         setError(error.message);
       }
